@@ -34,11 +34,6 @@ add_executable(calc ${SOURCES})
 # Link libraries
 target_link_libraries(calc raylib)
 
-# Include directories for raylib and raygui
-target_include_directories(calc PRIVATE
-    ${raylib_SOURCE_DIR}/src
-    ${raygui_SOURCE_DIR}/src
-)
 
 # Platform-specific settings
 if (WIN32)
@@ -58,5 +53,10 @@ add_custom_command(TARGET calc POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${raygui_SOURCE_DIR}/src ${CMAKE_BINARY_DIR}/src)
 
+# Include directories for raylib and raygui
+target_include_directories(calc PRIVATE
+    ${raylib_SOURCE_DIR}/src
+    ${raygui_SOURCE_DIR}/src
+)
 # Set the working directory to the location of the executable
 set_target_properties(calc PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
