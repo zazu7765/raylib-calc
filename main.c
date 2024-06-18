@@ -42,12 +42,13 @@ int main() {
     Color operatorColor = {(uint8_t)242, (uint8_t)163, (uint8_t)60, (uint8_t)0};
 
     while (!WindowShouldClose()) {
+        GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
 
         GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(WHITE));
         GuiSetStyle(DEFAULT, BORDER_WIDTH, 0);
         // Special Buttons
         GuiSetStyle(DEFAULT, BASE_COLOR_NORMAL, ColorToInt(specialColor));
-        if (GuiButton((Rectangle){ firstColX, firstRowY, buttonWidth, buttonHeight }, "A C")) {
+        if (GuiButton((Rectangle){ firstColX, firstRowY, buttonWidth, buttonHeight }, "AC")) {
             memset(input, 0, MAX_INPUT_LENGTH);
         }
         if (GuiButton((Rectangle){ secondColX, firstRowY, buttonWidth, buttonHeight }, "+/-")) strcat(input, "DONT DO IT");
@@ -80,10 +81,6 @@ int main() {
             enterPressed = true;
         }
 
-        GuiSetStyle(TEXTBOX, BORDER_COLOR_NORMAL, ColorToInt(specialColor));
-        GuiSetStyle(TEXTBOX, BASE_COLOR_NORMAL, ColorToInt(specialColor));
-        GuiSetStyle(TEXTBOX, TEXT_COLOR_NORMAL, ColorToInt(specialColor));
-        GuiTextBox((Rectangle){ defaultX, defaultY, 300, 50 }, input, MAX_INPUT_LENGTH, true);
 
         // give me a list of all the rectangles from above
         Rectangle rectangles[] = {
@@ -107,9 +104,6 @@ int main() {
             (Rectangle){ fourthColX, fourthRowY, buttonWidth+10, buttonHeight },
             (Rectangle){ fourthColX, fifthRowY, buttonWidth+10, buttonHeight+10 }
         };
-        for(int i = 0; i < sizeof(rectangles)/sizeof(rectangles[0]); i++){
-            DrawRectangleLinesEx(rectangles[i], 0.5, BLACK);
-        };
         if (enterPressed) {
             strcpy(input, "woops didn't implement");
             enterPressed = false;
@@ -118,6 +112,14 @@ int main() {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
+        for(int i = 0; i < sizeof(rectangles)/sizeof(rectangles[0]); i++){
+            DrawRectangleLinesEx(rectangles[i], 0.55, BLACK);
+        };
+        GuiSetStyle(TEXTBOX, BORDER_WIDTH, 0);
+        GuiSetStyle(TEXTBOX, BORDER_COLOR_NORMAL, ColorToInt(BLACK));
+        GuiSetStyle(TEXTBOX, BASE_COLOR_NORMAL, ColorToInt(WHITE));
+        GuiSetStyle(TEXTBOX, TEXT_COLOR_NORMAL, ColorToInt(BLACK));
+        GuiTextBox((Rectangle){ defaultX, defaultY, 300, 50 }, input, MAX_INPUT_LENGTH, true);
 
         EndDrawing();
     }
