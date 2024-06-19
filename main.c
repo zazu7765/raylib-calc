@@ -5,6 +5,8 @@
 #include <stdlib.h>
 
 #define MAX_INPUT_LENGTH 256
+
+// Custom Text Box that allows for input as I want it, since the library default is not fun for me to work with.
 void DrawCustomTextBox(Font font, Rectangle bounds, char *text)
 {
     Color borderColor = borderColor;
