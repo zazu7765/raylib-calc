@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #define MAX_INPUT_LENGTH 256
-void DrawCustomTextBox(Font font, Rectangle bounds, char *text, bool *editMode)
+void DrawCustomTextBox(Font font, Rectangle bounds, char *text)
 {
     Color borderColor = borderColor;
     Color backgroundColor = LIGHTGRAY;
@@ -23,30 +23,56 @@ void DrawCustomTextBox(Font font, Rectangle bounds, char *text, bool *editMode)
     }
     DrawRectangleRec(bounds, otherColor);
 
-    // Handle input when in edit mode
-    if (*editMode)
+    int key = GetKeyPressed();
+    while (key > 0)
     {
-        int key = GetKeyPressed();
-        while (key > 0)
-        {
-            if ((key >= 32) && (key <= 125) && (strlen(text) < MAX_INPUT_LENGTH - 1))
-            {
-                int len = strlen(text);
-                text[len] = (char)key;
-                text[len + 1] = '\0';
-            }
+        bool shiftDown = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
 
-            if (key == KEY_BACKSPACE)
+        if ((key >= 32) && (key <= 125) && (strlen(text) < MAX_INPUT_LENGTH - 1))
+        {
+            if (shiftDown)
             {
-                int len = strlen(text);
-                if (len > 0)
+                switch (key)
                 {
-                    text[len - 1] = '\0';
+                case KEY_EQUAL:
+                    strcat(text, "+");
+                    break;
+                case KEY_EIGHT:
+                    strcat(text, "*");
+                    break;
+                case KEY_FIVE:
+                    strcat(text, "%");
+                    break;
+                // Add more cases for other shifted keys if needed
+                default:
+                    break;
                 }
             }
-
-            key = GetKeyPressed();
+            else
+            {
+                if (key == KEY_EQUAL)
+                {
+                    strcat(text, "=");
+                }
+                else
+                {
+                    int len = strlen(text);
+                    text[len] = (char)key;
+                    text[len + 1] = '\0';
+                }
+            }
         }
+
+        if (key == KEY_BACKSPACE)
+        {
+            int len = strlen(text);
+            if (len > 0)
+            {
+                text[len - 1] = '\0';
+            }
+        }
+
+        key = GetKeyPressed();
     }
 
     Vector2 textSize = MeasureTextEx(font, text, 40, 2);
@@ -55,19 +81,11 @@ void DrawCustomTextBox(Font font, Rectangle bounds, char *text, bool *editMode)
 
     // Draw the text
     DrawTextEx(font, text, (Vector2){textX, textY}, 40, 2, textColor);
-
-    // Handle mouse input to toggle edit mode
-    if (CheckCollisionPointRec(GetMousePosition(), bounds))
-    {
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-        {
-            *editMode = !*editMode;
-        }
-    }
 }
 
 int main()
 {
+    SetTraceLogLevel(LOG_NONE);
     // Initialization
     const int screenWidth = 230;
     const int screenHeight = 295;
@@ -99,8 +117,6 @@ int main()
     const int secondColX = defaultX + buttonWidth + padding;
     const int thirdColX = secondColX + buttonWidth + padding;
     const int fourthColX = thirdColX + buttonWidth + padding;
-
-    bool editMode = true;
 
     Color normalColor = {93, 91, 95, 255};
     Color specialColor = {61, 57, 64, 255};
@@ -189,7 +205,7 @@ int main()
         BeginDrawing();
         ClearBackground(BLACK);
 
-        DrawCustomTextBox(customFont, (Rectangle){defaultX, defaultY, 230, 50}, input, &editMode);
+        DrawCustomTextBox(customFont, (Rectangle){defaultX, defaultY, 230, 50}, input);
 
         EndDrawing();
     }
