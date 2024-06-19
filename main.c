@@ -5,16 +5,23 @@
 #include <stdlib.h>
 
 #define MAX_INPUT_LENGTH 256
-void DrawCustomTextBox(Rectangle bounds, char *text, bool *editMode)
+void DrawCustomTextBox(Font font, Rectangle bounds, char *text, bool *editMode)
 {
     Color borderColor = borderColor;
     Color backgroundColor = LIGHTGRAY;
     Color otherColor = {40, 37, 43, 255};
-    Color textColor = BLUE;
+    Color textColor = WHITE;
 
-    // Draw the text box
+    // Initialize text to "0" if empty
+    if (strlen(text) == 0)
+    {
+        strcpy(text, "0");
+    }
+    else if (strlen(text) == 2 && text[0] == '0')
+    {
+        memmove(text, text + 1, strlen(text));
+    }
     DrawRectangleRec(bounds, otherColor);
-    // DrawRectangleLinesEx(bounds, 1, borderColor);
 
     // Handle input when in edit mode
     if (*editMode)
@@ -42,8 +49,12 @@ void DrawCustomTextBox(Rectangle bounds, char *text, bool *editMode)
         }
     }
 
+    Vector2 textSize = MeasureTextEx(font, text, 40, 2);
+    float textX = bounds.x + bounds.width - textSize.x - 10; // Adjust 10 for padding
+    float textY = bounds.height - textSize.y;
+
     // Draw the text
-    DrawText(text, bounds.x + 5, bounds.y + (bounds.height - 20) / 2, 20, textColor);
+    DrawTextEx(font, text, (Vector2){textX, textY}, 40, 2, textColor);
 
     // Handle mouse input to toggle edit mode
     if (CheckCollisionPointRec(GetMousePosition(), bounds))
@@ -175,11 +186,10 @@ int main()
         DrawLineEx((Vector2){firstColX, fourthRowY}, (Vector2){screenWidth, fourthRowY}, 1, borderColor);
         DrawLineEx((Vector2){firstColX, fifthRowY}, (Vector2){screenWidth, fifthRowY}, 1, borderColor);
 
-
         BeginDrawing();
         ClearBackground(BLACK);
 
-        DrawCustomTextBox((Rectangle){defaultX, defaultY, 300, 50}, input, &editMode);
+        DrawCustomTextBox(customFont, (Rectangle){defaultX, defaultY, 230, 50}, input, &editMode);
 
         EndDrawing();
     }
