@@ -65,10 +65,15 @@ void DrawCustomTextBox(Font font, Rectangle bounds, char *text)
 
         if (key == KEY_BACKSPACE)
         {
+            if (IsKeyDown(KEY_LEFT_CONTROL)) {
+                memset(text, 0, MAX_INPUT_LENGTH);
+            }
+            else{
             int len = strlen(text);
             if (len > 0)
             {
                 text[len - 1] = '\0';
+            }
             }
         }
 
@@ -180,6 +185,9 @@ int main()
             strcat(input, "+");
         if (GuiButton((Rectangle){fourthColX, fifthRowY, buttonWidth + 10, buttonHeight + 10}, "="))
         {
+            enterPressed = true;
+        } 
+        if (IsKeyPressed(KEY_ENTER)) {
             enterPressed = true;
         }
 
