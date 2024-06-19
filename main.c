@@ -3,6 +3,7 @@
 #include "raygui.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #define MAX_INPUT_LENGTH 256
 
